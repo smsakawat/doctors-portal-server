@@ -1,4 +1,5 @@
 const express = require("express");
+const fileUpload = require("express-fileupload");
 const app = express();
 require("dotenv").config();
 const admin = require("firebase-admin");
@@ -11,6 +12,8 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+// setting up middlware for converting files
+app.use(fileUpload());
 
 // setting up firebase sdk
 const serviceAccount = require("./doctors-portal-abc57-firebase-adminsdk-7ejth-c1b92c0959.json");
@@ -134,6 +137,12 @@ async function run() {
       };
       const result = await appointmentCollection.updateOne(filter, updateDoc);
       res.json(result);
+    });
+
+    // api for saving doctors info in db
+    app.post("/doctors", async (req, res) => {
+      console.log(req.body);
+      console.log(req.files);
     });
 
     // post api for getting user paymentInfo and to create an intent based on this
